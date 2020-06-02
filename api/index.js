@@ -4,6 +4,8 @@ bodyParser = require('body-parser'),
 port = process.env.PORT || 7000,
 userRoutes = require('./router/user');
 
+require('dotenv').config();
+
 app = express();
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({

@@ -9,8 +9,8 @@ module.exports.addNewUser = (data) => {
     });
 
     bcrypt.hash(data.password, 10, (err, hash) => {
-        let sqlQuery = `INSERT INTO user (first_name, last_name, username, email, password) VALUES (?,?,?,?,?)`;
-        let params = [data.first_name, data.last_name, data.username, data.email, hash];
+        let sqlQuery = `INSERT INTO user (first_name, last_name, email, password) VALUES (?,?,?,?) `;
+        let params = [data.first_name, data.last_name, data.email, hash];
         db.connection.query(sqlQuery, params, (err, result) => {
             if (err) throw err;
             prResolve(result);
