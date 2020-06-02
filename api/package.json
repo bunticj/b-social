@@ -1,0 +1,19 @@
+{
+  "name": "main-backend-service",
+  "version": "1.0.0",
+  "description": "main service for b-social app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bunticj/b-social.git"
+  },
+  "author": "bunticj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bunticj/b-social/issues"
+  },
+  "homepage": "https://github.com/bunticj/b-social#readme"
+}
