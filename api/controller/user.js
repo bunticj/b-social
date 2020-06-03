@@ -18,7 +18,7 @@ module.exports.addUser = (req, res, next) => {
             });
 
         })
-        .catch(err => console.log(err));
+        .catch(err => res.status(500).json('Internal error'));
 }
 
 module.exports.loginUser = (req, res, next) => {
@@ -44,5 +44,6 @@ module.exports.loginUser = (req, res, next) => {
                     res.status(401).json('Authentication failed');
                 }
             });
-        });
+        })
+        .catch(err =>  res.status(500).json('Internal error'));
 }
