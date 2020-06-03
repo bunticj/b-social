@@ -23,7 +23,20 @@ module.exports.validateUser = () => {
            })
         
         }),
-
+        body('username')
+        .not().isEmpty().withMessage('Field is empty')
+        .custom(value => {
+           return userModel.getUserByUsername(value)
+           .then(resolve => {
+               if (resolve.length > 0) {
+                   throw new Error('Username already in use');
+               }
+               return true;
+               
+           })
+        
+        }),
+        
         body('password')
         .not().isEmpty().withMessage('Field is empty'),
 
@@ -44,7 +57,6 @@ module.exports.validate = (req, res, next) => {
     if (errors.isEmpty()) {
         return next()
     }
-    console.log(errors);
     return res.status(400).json({
         errors: errors.array()
     });

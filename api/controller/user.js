@@ -1,6 +1,9 @@
 const userModel = require('../model/user');
 const signToken = require('../middlewares/jwt_auth').signToken;
 const bcrypt = require('bcryptjs');
+const kafkaMessageClass = require('../kafka-node/kafkaMessageClass');
+const produceMessage = require('../kafka-node/producer').produceMessage;
+const kafkaPayload = [];
 
 module.exports.addUser = (req, res, next) => {
     userModel.addNewUser(req.body)
@@ -10,15 +13,23 @@ module.exports.addUser = (req, res, next) => {
                 email: req.body.email,
                 user_id: resolve.insertId
             };
+            //send message on registration to kafka
+            kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId));
+            kafkaPayload.push(new kafkaMessageClass('username', req.body.username));
+            kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name));
+            kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name));
+            kafkaPayload.push(new kafkaMessageClass('email', req.body.email));
+            produceMessage(kafkaPayload);
+            
             const token = signToken(tokenPayload);
-            console.log(token);
             res.status(201).json({
                 message: 'User created',
                 token
             });
 
         })
-        .catch(err => res.status(500).json('Internal error'));
+        .catch(err => {
+            res.status(500).json('Internal error')});
 }
 
 module.exports.loginUser = (req, res, next) => {
@@ -47,3 +58,4 @@ module.exports.loginUser = (req, res, next) => {
         })
         .catch(err =>  res.status(500).json('Internal error'));
 }
+
