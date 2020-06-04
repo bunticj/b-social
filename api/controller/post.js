@@ -5,10 +5,25 @@ const kafkaPayload = [];
 
 
 module.exports.getPosts = (req, res, next) => {
-    postModel.posts()
+    
+    let page = parseInt(req.query.page || 1);
+    let size = parseInt(req.query.size || 10);
+    let offset = (page - 1) * size;
+    let numOfRows;
+    postModel.rowCount()
+    .then(result => { 
+        numOfRows = result[0].row_num;
+    });
+
+    postModel.posts(size,offset)
         .then(resolve => {
             if (resolve) {
-                res.status(200).json(resolve);
+                res.status(200).json({
+                    data: resolve,
+                    currentPage : page,
+                    pageSize : size,
+                    totalPages: Math.ceil(numOfRows/size)
+                });
             }
         })
         .catch(err => res.status(500).json(err));
@@ -33,7 +48,7 @@ module.exports.createPost = (req, res, next) => {
                 const topic = 'PostTopic';
 
                 //send message on post add to kafka
-                kafkaPayload.push(new kafkaMessageClass('user_id', req.userData.user_id, topic));
+                kafkaPayload.push(new kafkaMessageClass('user_id', req.userData._id, topic));
                 kafkaPayload.push(new kafkaMessageClass('username', req.userData.username, topic));
                 kafkaPayload.push(new kafkaMessageClass('email', req.userData.email, topic));
                 kafkaPayload.push(new kafkaMessageClass('post_id', resolve.insertId, topic));
