@@ -1,5 +1,5 @@
-class registerMessage {
-    constructor( key, messages,topic = 'kafka-test-topic', partition = 0) {
+class kafkaMsgClass {
+    constructor( key, messages, topic, partition = 0) {
       this.topic = topic;
       this.key = key;
       this.messages = messages;
@@ -8,4 +8,4 @@ class registerMessage {
   }
 
 
-  module.exports = registerMessage;   
+  module.exports = kafkaMsgClass;   
