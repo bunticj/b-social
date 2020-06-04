@@ -64,3 +64,11 @@ module.exports.loginUser = (req, res, next) => {
         .catch(err =>  res.status(500).json('Internal error'));
 }
 
+module.exports.getUsers = (req, res, next) => {
+    userModel.getAllUsers()
+        .then(resolve => {
+            
+            res.status(200).json(resolve);
+        })
+        .catch(err => console.log(err));
+}

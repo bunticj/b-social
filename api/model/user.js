@@ -19,6 +19,19 @@ module.exports.addNewUser = (data) => {
     return pr;
 }
 
+module.exports.getAllUsers = () => {
+
+    let prResolve;
+    let pr = new Promise(resolve => {
+        prResolve = resolve;
+    });
+    let sqlQuery = `SELECT *  FROM user `;
+    db.connection.query(sqlQuery,(err, result) => {
+        if (err) throw err;
+        prResolve(result);
+    });
+    return pr;
+}
 module.exports.getUserByEmail = (email) => {
     let prResolve;
     let pr = new Promise(resolve => {
