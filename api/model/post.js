@@ -3,13 +3,13 @@ const db = new DBClass();
 
 
 //after adding followers feature rewrite query
-module.exports.posts = () => {
+module.exports.posts = (limit, offset) => {
     let prResolve;
     let pr = new Promise((resolve, reject) => {
         prResolve = resolve;
     });
 
-    let sqlQuery = `SELECT * FROM post`;
+    let sqlQuery = `SELECT * FROM post ORDER BY post.created_at DESC LIMIT ${limit} OFFSET ${offset}`;
     db.connection.query(sqlQuery, (err, result) => {
         if (err) throw err;
         prResolve(result);
@@ -38,6 +38,19 @@ module.exports.singlePost = (id) => {
         prResolve = resolve;
     });
     let sqlQuery = `SELECT * FROM post WHERE post_id=${id}`;
+    db.connection.query(sqlQuery, (err, result) => {
+        if (err) throw err;
+        prResolve(result);
+    });
+    return pr;
+}
+
+module.exports.rowCount = () => {
+    let prResolve;
+    let pr = new Promise((resolve, reject) => {
+        prResolve = resolve;
+    });
+    let sqlQuery = `SELECT COUNT(*) AS row_num FROM post`;
     db.connection.query(sqlQuery, (err, result) => {
         if (err) throw err;
         prResolve(result);
