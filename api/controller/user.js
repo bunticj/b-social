@@ -11,14 +11,19 @@ module.exports.addUser = (req, res, next) => {
         .then(resolve => {
             const tokenPayload = {
                 email: req.body.email,
-                user_id: resolve.insertId
+                user_id: resolve.insertId,
+                username: req.body.username
             };
+            const timeNow = new Date().toISOString();
+            const topic = 'UserRegisterTopic';
             //send message on registration to kafka
-            kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId));
-            kafkaPayload.push(new kafkaMessageClass('username', req.body.username));
-            kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name));
-            kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name));
-            kafkaPayload.push(new kafkaMessageClass('email', req.body.email));
+            kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId, topic));
+            kafkaPayload.push(new kafkaMessageClass('username', req.body.username, topic));
+            kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name, topic));
+            kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name, topic));
+            kafkaPayload.push(new kafkaMessageClass('email', req.body.email, topic));
+            kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
+
             produceMessage(kafkaPayload);
             
             const token = signToken(tokenPayload);

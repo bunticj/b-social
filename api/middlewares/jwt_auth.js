@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
+module.exports.authCheck = (req, res, next) => {
     try {
         //handle 'Bearer' key word
         const token = req.headers.authorization.split(' ')[1];
@@ -18,7 +18,8 @@ module.exports = (req, res, next) => {
 module.exports.signToken = (user) => {
    return jwt.sign({
         email: user.email,
-        _id: user.user_id
+        _id: user.user_id,
+        username: user.username
     }, process.env.JWT_KEY, {
         expiresIn: 86400
     });

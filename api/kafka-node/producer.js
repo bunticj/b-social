@@ -8,7 +8,7 @@ producer = new HighLevelProducer(client);
    
         producer.on('ready', function () {
             producer.send(payloads, function (err, data) {
-                console.log(payloads);
+                console.log(`Message sent to kafka succesfully`)
                 console.log(data);
             });
         });
