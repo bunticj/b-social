@@ -15,21 +15,23 @@ module.exports.getComments = (req, res, next) => {
 
 module.exports.addComment = (req, res, next) => {
     if (req.body.comment_content && req.params.postId && req.userData._id) {
-        commentModel.newComment(req.body.comment_content, req.userData._id, req.params.postId, )
+        commentModel.newComment(req.body.comment_content, req.userData._id, req.params.postId, res)
             .then(resolve => {
-                const timeNow = new Date().toISOString();
-                const topic = 'CommentTopic';
-                //send message on comment to kafka
-                kafkaPayload.push(new kafkaMessageClass('user_id', req.userData._id, topic));
-                kafkaPayload.push(new kafkaMessageClass('username', req.userData.username, topic));
-                kafkaPayload.push(new kafkaMessageClass('email', req.userData.email, topic));
-                kafkaPayload.push(new kafkaMessageClass('post_id', req.params.postId, topic));
-                kafkaPayload.push(new kafkaMessageClass('comment_id', resolve.insertId, topic));
-                kafkaPayload.push(new kafkaMessageClass('comment_content', req.body.comment_content, topic));
-                kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
+                if (resolve) {
+                    const timeNow = new Date().toISOString();
+                    const topic = 'CommentTopic';
+                    //send message on comment to kafka
+                    kafkaPayload.push(new kafkaMessageClass('user_id', req.userData._id, topic));
+                    kafkaPayload.push(new kafkaMessageClass('username', req.userData.username, topic));
+                    kafkaPayload.push(new kafkaMessageClass('email', req.userData.email, topic));
+                    kafkaPayload.push(new kafkaMessageClass('post_id', req.params.postId, topic));
+                    kafkaPayload.push(new kafkaMessageClass('comment_id', resolve.insertId, topic));
+                    kafkaPayload.push(new kafkaMessageClass('comment_content', req.body.comment_content, topic));
+                    kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
 
-                produceMessage(kafkaPayload);
-                res.status(201).json('Comment created');
+                    produceMessage(kafkaPayload);
+                    res.status(201).json('Comment created');
+                }
             })
             .catch(err => res.status(500).json(err));
     } else {

@@ -5,9 +5,9 @@ module.exports = class DB {
         this.connection = mysql.createConnection({
             host: '127.0.0.1',
             user: 'root',
-            database:'b-social',
+            database: 'b-social',
             port: 3306
         })
     }
-    
+
 }

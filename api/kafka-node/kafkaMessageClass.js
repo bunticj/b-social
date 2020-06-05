@@ -6,6 +6,4 @@ class kafkaMsgClass {
       this.partition = partition;
     }
   }
-
-
   module.exports = kafkaMsgClass;   

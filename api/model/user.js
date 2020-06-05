@@ -26,7 +26,7 @@ module.exports.getAllUsers = () => {
         prResolve = resolve;
     });
     let sqlQuery = `SELECT *  FROM user `;
-    db.connection.query(sqlQuery,(err, result) => {
+    db.connection.query(sqlQuery, (err, result) => {
         if (err) throw err;
         prResolve(result);
     });
@@ -38,20 +38,20 @@ module.exports.getUserByEmail = (email) => {
         prResolve = resolve;
     });
     let sqlQuery = `SELECT *  FROM user WHERE email = ?`;
-    db.connection.query(sqlQuery,email,(err, result) => {
+    db.connection.query(sqlQuery, email, (err, result) => {
         if (err) throw err;
         prResolve(result);
     });
     return pr;
 }
 
-module.exports.getUserByUsername  = (username) => {
+module.exports.getUserByUsername = (username) => {
     let prResolve;
     let pr = new Promise(resolve => {
         prResolve = resolve;
     });
     let sqlQuery = `SELECT *  FROM user WHERE username = ?`;
-    db.connection.query(sqlQuery,username,(err, result) => {
+    db.connection.query(sqlQuery, username, (err, result) => {
         if (err) throw err;
         prResolve(result);
     });
