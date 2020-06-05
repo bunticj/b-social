@@ -9,32 +9,32 @@ module.exports.addUser = (req, res, next) => {
     userModel.addNewUser(req.body)
         .then(userModel.getUserByEmail(req.body.email))
         .then(resolve => {
-            const tokenPayload = {
-                email: req.body.email,
-                user_id: resolve.insertId,
-                username: req.body.username
-            };
-            const timeNow = new Date().toISOString();
-            const topic = 'UserRegisterTopic';
-            //send message on registration to kafka
-            kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId, topic));
-            kafkaPayload.push(new kafkaMessageClass('username', req.body.username, topic));
-            kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name, topic));
-            kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name, topic));
-            kafkaPayload.push(new kafkaMessageClass('email', req.body.email, topic));
-            kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
+            if (resolve) {
+                const tokenPayload = {
+                    email: req.body.email,
+                    user_id: resolve.insertId,
+                    username: req.body.username
+                };
+                const timeNow = new Date().toISOString();
+                const topic = 'UserRegisterTopic';
+                //send message on registration to kafka
+                kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId, topic));
+                kafkaPayload.push(new kafkaMessageClass('username', req.body.username, topic));
+                kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name, topic));
+                kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name, topic));
+                kafkaPayload.push(new kafkaMessageClass('email', req.body.email, topic));
+                kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
 
-            produceMessage(kafkaPayload);
-            
-            const token = signToken(tokenPayload);
-            res.status(201).json({
-                message: 'User created',
-                token
-            });
+                produceMessage(kafkaPayload);
 
+                const token = signToken(tokenPayload);
+                res.status(201).json({
+                    message: 'User created',
+                    token
+                });
+            }
         })
-        .catch(err => {
-            res.status(500).json('Internal error')});
+        .catch(err => res.status(500).json('Internal error'));
 }
 
 module.exports.loginUser = (req, res, next) => {
@@ -55,20 +55,20 @@ module.exports.loginUser = (req, res, next) => {
                         token
 
                     });
-                }
-                else {
+                } else {
                     res.status(401).json('Authentication failed');
                 }
             });
         })
-        .catch(err =>  res.status(500).json('Internal error'));
+        .catch(err => res.status(500).json('Internal error'));
 }
 
 module.exports.getUsers = (req, res, next) => {
     userModel.getAllUsers()
         .then(resolve => {
-            
-            res.status(200).json(resolve);
+            if (resolve) {
+                res.status(200).json(resolve);
+            }
         })
-        .catch(err => console.log(err));
+        .catch(err => res.status(500).json('Internal error'));
 }

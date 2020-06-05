@@ -1,15 +1,15 @@
 const DBClass = require('./DB_connection');
 const db = new DBClass();
 
-
-//after adding followers feature rewrite query
-module.exports.posts = (limit, offset) => {
+//get all post from user and those who is followed by the user
+module.exports.posts = (limit, offset, u_id) => {
     let prResolve;
     let pr = new Promise((resolve, reject) => {
         prResolve = resolve;
     });
 
-    let sqlQuery = `SELECT * FROM post ORDER BY post.created_at DESC LIMIT ${limit} OFFSET ${offset}`;
+    let sqlQuery = `SELECT * FROM post WHERE user_id=${u_id} OR user_id IN (SELECT following_user_id FROM follower WHERE user_id = ${u_id})
+    ORDER BY post.created_at DESC LIMIT ${limit} OFFSET ${offset} `;
     db.connection.query(sqlQuery, (err, result) => {
         if (err) throw err;
         prResolve(result);
@@ -17,6 +17,7 @@ module.exports.posts = (limit, offset) => {
     return pr;
 }
 
+//add new post
 module.exports.newPost = (u_id, post_content) => {
     let prResolve;
     let pr = new Promise((resolve) => {
@@ -31,7 +32,7 @@ module.exports.newPost = (u_id, post_content) => {
     return pr;
 }
 
-//after adding followers feature rewrite query
+//get single post
 module.exports.singlePost = (id) => {
     let prResolve;
     let pr = new Promise((resolve, reject) => {

@@ -5,9 +5,9 @@ module.exports.authCheck = (req, res, next) => {
         //handle 'Bearer' key word
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_KEY);
-        
+
         req.userData = decoded;
-        
+
         next();
     } catch (error) {
         return res.status(401).json({
@@ -16,7 +16,7 @@ module.exports.authCheck = (req, res, next) => {
     }
 }
 module.exports.signToken = (user) => {
-   return jwt.sign({
+    return jwt.sign({
         email: user.email,
         _id: user.user_id,
         username: user.username
@@ -24,4 +24,4 @@ module.exports.signToken = (user) => {
         expiresIn: 86400
     });
 
-}  
+}

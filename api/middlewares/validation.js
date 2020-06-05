@@ -1,4 +1,7 @@
-const { body , validationResult } = require('express-validator');
+const {
+    body,
+    validationResult
+} = require('express-validator');
 const userModel = require('../model/user');
 
 module.exports.validateUser = () => {
@@ -13,36 +16,38 @@ module.exports.validateUser = () => {
         .not().isEmpty().withMessage('Field is empty')
         .isEmail().withMessage('Email is not valid')
         .custom(value => {
-           return userModel.getUserByEmail(value)
-           .then(resolve => {
-               if (resolve.length > 0) {
-                   throw new Error('Email address already in use');
-               }
-               return true;
-               
-           })
-        
+            return userModel.getUserByEmail(value)
+                .then(resolve => {
+                    if (resolve.length > 0) {
+                        throw new Error('Email address already in use');
+                    }
+                    return true;
+
+                })
+
         }),
         body('username')
         .not().isEmpty().withMessage('Field is empty')
         .custom(value => {
-           return userModel.getUserByUsername(value)
-           .then(resolve => {
-               if (resolve.length > 0) {
-                   throw new Error('Username already in use');
-               }
-               return true;
-               
-           })
-        
+            return userModel.getUserByUsername(value)
+                .then(resolve => {
+                    if (resolve.length > 0) {
+                        throw new Error('Username already in use');
+                    }
+                    return true;
+
+                })
+
         }),
-        
+
         body('password')
         .not().isEmpty().withMessage('Field is empty'),
 
         body('confirm_password')
         .not().isEmpty().withMessage('Field is empty')
-        .custom((value, { req }) => {
+        .custom((value, {
+            req
+        }) => {
 
             if (value !== req.body.password) {
                 throw new Error(`Passwords don't match`)
