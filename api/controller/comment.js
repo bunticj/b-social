@@ -1,4 +1,6 @@
 const commentModel = require('../model/comment');
+const postModel = require('../model/post');
+
 const kafkaMessageClass = require('../kafka-node/kafkaMessageClass');
 const produceMessage = require('../kafka-node/producer').produceMessage;
 const kafkaPayload = [];
@@ -15,6 +17,13 @@ module.exports.getComments = (req, res, next) => {
 
 module.exports.addComment = (req, res, next) => {
     if (req.body.comment_content && req.params.postId && req.userData._id) {
+        let postAuthor;
+        postModel.singlePost(req.params.postId)
+            .then(resolve => {
+                if (resolve.length > 0) {
+                    postAuthor = resolve[0].user_id;
+                }
+            });
         commentModel.newComment(req.body.comment_content, req.userData._id, req.params.postId, res)
             .then(resolve => {
                 if (resolve) {
@@ -25,6 +34,7 @@ module.exports.addComment = (req, res, next) => {
                     kafkaPayload.push(new kafkaMessageClass('username', req.userData.username, topic));
                     kafkaPayload.push(new kafkaMessageClass('email', req.userData.email, topic));
                     kafkaPayload.push(new kafkaMessageClass('post_id', req.params.postId, topic));
+                    kafkaPayload.push(new kafkaMessageClass('post_author', postAuthor, topic));
                     kafkaPayload.push(new kafkaMessageClass('comment_id', resolve.insertId, topic));
                     kafkaPayload.push(new kafkaMessageClass('comment_content', req.body.comment_content, topic));
                     kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
