@@ -1,0 +1,23 @@
+{
+  "name": "notifications",
+  "version": "1.0.0",
+  "description": "Notification service for consuming kafka messages and sending the to post author",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bunticj/b-social.git"
+  },
+  "author": "bunticj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bunticj/b-social/issues"
+  },
+  "homepage": "https://github.com/bunticj/b-social#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "kafka-node": "^5.0.0"
+  }
+}

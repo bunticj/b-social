@@ -1,9 +1,6 @@
 const commentModel = require('../model/comment');
 const postModel = require('../model/post');
-
-const kafkaMessageClass = require('../kafka-node/kafkaMessageClass');
 const produceMessage = require('../kafka-node/producer').produceMessage;
-const kafkaPayload = [];
 
 module.exports.getComments = (req, res, next) => {
     commentModel.comments(req.params.postId)
@@ -26,19 +23,20 @@ module.exports.addComment = (req, res, next) => {
             });
         commentModel.newComment(req.body.comment_content, req.userData._id, req.params.postId, res)
             .then(resolve => {
-                if (resolve) {
+                if (resolve) {             
                     const timeNow = new Date().toISOString();
                     const topic = 'CommentTopic';
-                    //send message on comment to kafka
-                    kafkaPayload.push(new kafkaMessageClass('user_id', req.userData._id, topic));
-                    kafkaPayload.push(new kafkaMessageClass('username', req.userData.username, topic));
-                    kafkaPayload.push(new kafkaMessageClass('email', req.userData.email, topic));
-                    kafkaPayload.push(new kafkaMessageClass('post_id', req.params.postId, topic));
-                    kafkaPayload.push(new kafkaMessageClass('post_author', postAuthor, topic));
-                    kafkaPayload.push(new kafkaMessageClass('comment_id', resolve.insertId, topic));
-                    kafkaPayload.push(new kafkaMessageClass('comment_content', req.body.comment_content, topic));
-                    kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
-
+                    //send message on comment to kafka                    
+                    let kafkaPayload = [
+                    {topic : topic, key : 'user_id', messages: req.userData._id, partition:0},
+                    {topic : topic, key : 'username', messages: req.userData.username, partition:0},
+                    {topic : topic, key : 'email', messages: req.userData.email, partition:0},
+                    {topic : topic, key : 'post_id', messages: req.params.postId, partition:0},
+                    {topic : topic, key : 'post_author', messages: postAuthor, partition:0},
+                    {topic : topic, key : 'comment_id', messages: resolve.insertId, partition:0},
+                    {topic : topic, key : 'comment_content', messages: req.body.comment_content, partition:0},
+                    {topic : topic, key : 'comment_created_at', messages: timeNow, partition:0},
+                ];
                     produceMessage(kafkaPayload);
                     res.status(201).json('Comment created');
                 }
