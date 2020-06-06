@@ -39,6 +39,7 @@ module.exports.getSinglePost = (req, res, next) => {
 module.exports.createPost = (req, res, next) => {
 
     if (req.body.post_content && req.userData._id) {
+        console.log(req.body.post_content, req.userData._id);
         postModel.newPost(req.userData._id, req.body.post_content)
             .then(resolve => {
                 if (resolve) {

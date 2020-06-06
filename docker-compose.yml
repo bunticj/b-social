@@ -16,3 +16,51 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - "zookeeper"
+
+  database:
+    container_name: database
+    build: ./api/model
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: bsocial2
+      DATABASE_HOST: database
+    ports:
+      - "3306:3306"
+    volumes:
+      - myvol:/data 
+    networks:
+      - appnet
+  app:
+    container_name: api
+    build: ./api
+    environment:
+      DATABASE_HOST: database
+      MYSQL_PORT: "3306"
+      MYSQL_DATABASE: bsocial2
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: rootpass
+      JWT_KEY: nekiJWTsecretKEY123
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database    
+    networks:
+      - appnet
+    links: 
+     - database
+    restart: unless-stopped
+    
+  notifications:
+    container_name: notifications
+    build: ./notifications 
+    networks:
+      - appnet
+    restart: unless-stopped
+
+networks:
+  appnet:
+
+volumes:
+  myvol:
