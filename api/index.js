@@ -1,13 +1,11 @@
 const express = require('express'),
     logger = require('morgan'),
     bodyParser = require('body-parser'),
-    port = process.env.PORT || 7000,
+    port = process.env.PORT || 3000,
     userRoutes = require('./router/user'),
     postRoutes = require('./router/post'),
     commentRoutes = require('./router/comment'),
     followRoutes = require('./router/follower')
-
-require('dotenv').config();
 
 app = express();
 app.use(logger('dev'));
