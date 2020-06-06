@@ -1,9 +1,7 @@
 const userModel = require('../model/user');
 const signToken = require('../middlewares/jwt_auth').signToken;
 const bcrypt = require('bcryptjs');
-const kafkaMessageClass = require('../kafka-node/kafkaMessageClass');
 const produceMessage = require('../kafka-node/producer').produceMessage;
-const kafkaPayload = [];
 
 module.exports.addUser = (req, res, next) => {
     userModel.addNewUser(req.body)
@@ -15,16 +13,17 @@ module.exports.addUser = (req, res, next) => {
                     user_id: resolve.insertId,
                     username: req.body.username
                 };
-                const timeNow = new Date().toISOString();
+            //send message on registration to kafka
                 const topic = 'UserRegisterTopic';
-                //send message on registration to kafka
-                kafkaPayload.push(new kafkaMessageClass('user_id', resolve.insertId, topic));
-                kafkaPayload.push(new kafkaMessageClass('username', req.body.username, topic));
-                kafkaPayload.push(new kafkaMessageClass('first_name', req.body.first_name, topic));
-                kafkaPayload.push(new kafkaMessageClass('last_name', req.body.last_name, topic));
-                kafkaPayload.push(new kafkaMessageClass('email', req.body.email, topic));
-                kafkaPayload.push(new kafkaMessageClass('date_of_registration', timeNow, topic));
-
+                let timeNow = new Date().toISOString();
+                let kafkaPayload = [
+                    {topic : topic, key : 'user_id', messages: resolve.insertId, partition:0},
+                    {topic : topic, key : 'username', messages: req.body.username, partition:0},
+                    {topic : topic, key : 'email', messages: req.body.email, partition:0},
+                    {topic : topic, key : 'first_name', messages: req.body.first_name, partition:0},
+                    {topic : topic, key : 'last_name', messages: req.body.last_name, partition:0},
+                    {topic : topic, key : 'date_of_registration', messages: timeNow, partition:0},
+                ];
                 produceMessage(kafkaPayload);
 
                 const token = signToken(tokenPayload);
