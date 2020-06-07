@@ -1,4 +1,4 @@
-FROM node:12.16
+FROM node:12.11.1-alpine
 
 WORKDIR /usr/src/notifications
 
