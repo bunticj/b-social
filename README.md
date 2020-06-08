@@ -98,6 +98,7 @@ req.params.postId : post_id value
 req.body :{
     comment_content: String
 }  
+*Upon commenting, Kafka receives a messages, and sends request to user messages internally
 ```
 
 ```
