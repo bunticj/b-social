@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports.sendRequest = (messageObj) => {
 axios.request({
     method: 'POST',
-    url: `http://${process.env.HOST}:3000/user/${messageObj.post_author}/message`,
+    url: `http://192.168.99.100:3000/user/${messageObj.post_author}/message`,
     data: {user_id: messageObj.post_author,message_content:`Your post with ID=${messageObj.post_id} has been commented`},
     header: {'Content-Type' : 'application/json'}
 }).then(response => {          
