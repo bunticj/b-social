@@ -1,7 +1,8 @@
 const kafka = require('kafka-node');
 const sendRequest = require('./send_notification').sendRequest;
+
 try {
-  const client = new kafka.KafkaClient({kafkaHost: '192.168.99.100:9092'});  
+  const client = new kafka.KafkaClient({kafkaHost: `192.168.99.100:9092`});  
   let offset = new kafka.Offset(client);
 
   offset.fetch([{ topic: 'CommentTopic', partition: 0, time: -1, }],  (err, data) => {
@@ -25,7 +26,6 @@ try {
 
   });
 const messageObj = {};
-let counter = 0;
 
   consumer.on('message', async function(message) {
 

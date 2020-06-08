@@ -1,0 +1,24 @@
+{
+  "name": "telemetry",
+  "version": "1.0.0",
+  "description": "telemetry system with elasticsearch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node kafka_consumer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bunticj/b-social.git"
+  },
+  "author": "bunticj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bunticj/b-social/issues"
+  },
+  "homepage": "https://github.com/bunticj/b-social#readme",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.4.0",
+    "kafka-node": "^5.0.0"
+  }
+}
