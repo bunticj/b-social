@@ -4,18 +4,25 @@
 Project consists of 3 main folders and docker-compose
 
 api : REST API service and MySQL database
+
 notifications: Kafka comment consumer which fires HTTP request to alert the new notification
+
 telemetry: Kafka consumer for all messages, and writes them to Elasticsearch
+
 docker-compose: Orchestrator for all services
 
 ### Project run
 ```
 docker-compose up -d
 ```
-After all services start, services are available on: 
-API: 192.168.99.100:3000
-Kibana: 192.168.99.100:5601
-Elasticsearch: 192.168.99.100:9200
+After all services start, services are available on:
+
+-API: 192.168.99.100:3000
+
+-Kibana: 192.168.99.100:5601
+
+-Elasticsearch: 192.168.99.100:9200
+
 *It's possible that instead of '192.168.99.100' services will be available on '0.0.0.0'
 
 
@@ -39,7 +46,7 @@ req.body :{
     email : String,
     username: String,
     password : String,
-    confirmPassword :String
+    confirm_password :String
 } 
 ```
 
