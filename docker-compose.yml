@@ -89,7 +89,7 @@ services:
     build: ./telemetry
     networks:
       - appnet
-    restart: unless-stopped   
+    restart: on-failure   
 
 networks:
   appnet:

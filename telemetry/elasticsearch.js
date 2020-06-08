@@ -11,7 +11,8 @@ module.exports.run = async function run (bodyObj,indexName) {
     await client.indices.refresh({ index: indexName });
     console.log('Kafka message written to Elasticsearch successfully. Index name : ',indexName);
 }
-        /*
+
+/*
     let   {body}= await client.search({
         index: 'posts',
         body: {
@@ -22,4 +23,4 @@ module.exports.run = async function run (bodyObj,indexName) {
       })
      
       console.log(body.hits.hits)
-  */
+*/
