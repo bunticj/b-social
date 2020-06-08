@@ -1,8 +1,9 @@
 const kafka = require('kafka-node');
 const run = require('./elasticsearch').run;
+
 try {
     const client = new kafka.KafkaClient({
-        kafkaHost: '192.168.99.100:9092'
+        kafkaHost:'192.168.99.100:9092'
     });
     let offset = new kafka.Offset(client);
 
