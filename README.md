@@ -7,23 +7,24 @@ api : REST API service and MySQL database
 
 notifications: Kafka comment consumer which fires HTTP request to alert the new notification
 
-telemetry: Kafka consumer for all messages, and writes them to Elasticsearch
+telemetry: Kafka consumer all the messages and writes them to Elasticsearch
 
 docker-compose: Orchestrator for all services
 
 ### Project run
+
+In order to start all services, you have to set LOCAL_ADD variable,it represents your docker-machine ip:
+
 ```
-docker-compose up -d
+LOCAL_ADD=192.168.99.100:5601 docker-compose up -d
 ```
-After all services start, services are available on:
 
--API: 192.168.99.100:3000
+-API: ${LOCAL_ADD}:3000
 
--Kibana: 192.168.99.100:5601
+-Kibana: ${LOCAL_ADD}:5601
 
--Elasticsearch: 192.168.99.100:9200
+-Elasticsearch: ${LOCAL_ADD}:9200
 
-*It's possible that instead of '192.168.99.100' services will be available on '0.0.0.0'
 
 
 #### API Routes
@@ -49,6 +50,7 @@ req.body :{
     confirm_password :String
 } 
 ```
+Upon registering,user receives token, Kafka publishes a message about user 
 
 ```
 Login user :
@@ -78,7 +80,7 @@ GET baseURL/follow
 Get user notifications :
 GET baseURL/user/:userId/message
 ```
-
+Get unseen notifications
 
 
 ##### Post and Comments related routes
@@ -90,19 +92,20 @@ req.body :{
     post_content: String
 }  
 ```
+After adding post, Kafka publishes a message
 
 ```
 Add new comment on post :
 POST baseURL/post/:postId/comment
-req.params.postId : post_id value
+req.params.postId : post_id Integer
 req.body :{
     comment_content: String
 }  
-*Upon commenting, Kafka receives a messages, and sends request to user messages internally
+After commenting, Kafka publishes a messages, and call axios request to user messages internally to add new notification to the owner of the post
 ```
 
 ```
-Get all users post and post from following users :
+Get posts from user and those who user follows :
 Pagination -> req.query.page : integer || default=1, req.query.size : integer || default=10
 GET baseURL/post
 ```
@@ -111,6 +114,6 @@ Get single post
 GET baseURL/post/:postId
 ```
 ```
-Get all comments post 
+Get all comments on single post
 GET baseURL/post/:postId/comments
 ```
