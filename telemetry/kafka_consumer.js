@@ -1,10 +1,14 @@
 const kafka = require('kafka-node');
+const path = require('path');
 const run = require('./elasticsearch').run;
+
+
+
 
 try {
 
     const client = new kafka.KafkaClient({
-        kafkaHost:'192.168.99.100:9092'
+        kafkaHost:process.env.LOCAL_IP+':9092'
     });
     let offset1 = new kafka.Offset(client);
     offset1.fetch([{
@@ -13,7 +17,7 @@ try {
         time: -1,
     }], (err, data) => {
         if (err) throw err;
-        console.log('Latest offset ', data['CommentTopic']['0'][0]);
+        console.log('Latest offset on CommentTopic ', data['CommentTopic']['0'][0]);
     });
     let offset2 = new kafka.Offset(client);
     offset2.fetch([{
@@ -22,7 +26,7 @@ try {
         time: -1,
     }], (err, data) => {
         if (err) throw err;
-        console.log('Latest offset ', data['PostTopic']['0'][0]);
+        console.log('Latest offset on PostTopic ', data['PostTopic']['0'][0]);
     });
     let offset3 = new kafka.Offset(client);
     offset3.fetch([{
@@ -31,7 +35,7 @@ try {
         time: -1,
     }], (err, data) => {
         if (err) throw err;
-        console.log('Latest offset ', data['UserRegisterTopic']['0'][0]);
+        console.log('Latest offset on UserRegisterTopic ', data['UserRegisterTopic']['0'][0]);
     });
 
     let consumer = new kafka.Consumer(

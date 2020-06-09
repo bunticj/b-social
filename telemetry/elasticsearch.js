@@ -1,6 +1,6 @@
 const elasticsearch = require('@elastic/elasticsearch');
 
-const client = new elasticsearch.Client({node:`http://192.168.99.100:9200`});
+const client = new elasticsearch.Client({node:`http://${process.env.LOCAL_IP}:9200`});
 
 module.exports.run = async function run (bodyObj,indexName) {
     await client.index({
