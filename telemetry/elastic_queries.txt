@@ -1,0 +1,15 @@
+POST /registrations/_search
+
+{"size":0,"aggs":{
+    "reg_by_day":{ 
+        "date_histogram":{
+            "field": "date_of_registration",
+            "fixed_interval":"1d",
+            "format":"yyyy-MM-dd"
+            
+            }
+        }
+    }
+}
+
+//Query to return count of registrations per day

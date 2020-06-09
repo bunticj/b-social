@@ -12,15 +12,3 @@ module.exports.run = async function run (bodyObj,indexName) {
     console.log('Kafka message written to Elasticsearch successfully. Index name : ',indexName);
 }
 
-/*
-    let   {body}= await client.search({
-        index: 'posts',
-        body: {
-          query: {
-            match: { post_id: '1' }
-          }
-        }
-      })
-     
-      console.log(body.hits.hits)
-*/
