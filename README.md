@@ -16,7 +16,7 @@ docker-compose: Orchestrator for all services
 In order to start all services, you have to set LOCAL_ADD variable,it represents your docker-machine ip:
 
 ```
-LOCAL_ADD=192.168.99.100:5601 docker-compose up -d
+LOCAL_ADD=192.168.99.100 docker-compose up -d
 ```
 
 -API: ${LOCAL_ADD}:3000
